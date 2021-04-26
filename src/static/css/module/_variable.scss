@@ -1,0 +1,23 @@
+@function theme($color) {
+  @return map-get($theme-colors, $color);
+}
+
+@function typograph($font) {
+  @return map-get($typography-guide, $font);
+}
+
+// Color
+$theme-colors: (
+  "main": #444753,
+  "sub": #92959e,
+  "tetra": #e7e7e7,
+  "penta": #86bb71,
+  "hexa": #94c2ed,
+  "orange": #e38968,
+);
+
+$typography-guide: (
+  "title-main": "Gidolinya",
+  "subtitle-main": "Cabin",
+  "paragraph-main": "Cabin",
+);
