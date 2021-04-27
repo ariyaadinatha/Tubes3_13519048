@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>depressedBot</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -18,49 +19,31 @@
                         <h3 class="bot-name"> Chat bot </h3>
                     </div>
                     <div class="chat-container">
-                        <div class="d-flex flex-row">     
-                            <div class="bot-chat">
-                                <div class="chat-text">
-                                    Selamat malam! ada yang bisa dibantu?
-                                </div>
-                            </div>
-                            <div class="chat-time">
-                                04:02 AM
-                            </div>
-                        </div>
-                        <div class="d-flex flex-row-reverse">
-                            <div class="user-chat">
-                                <div class="chat-text">
-                                    pengen mati gan
-                                </div>
-                            </div>
-                            <div class="chat-time">
-                                04:02 AM
-                            </div>
-                        </div>
-                        <div class="d-flex flex-row">
-                            <div class="bot-chat">
-                                <div class="chat-text">
-                                    Sama
-                                </div>
-                            </div>
-                            <div class="chat-time">
-                                04:03 AM
-                            </div>
-                        </div>
-                        <div class="d-flex flex-row-reverse">
-                            <div class="user-chat">
-                                <div class="chat-text">
-                                    wkwkkwkwkwkwk
-                                </div>
+                        <div class='d-flex flex-row'> 
+                            <div class='bot-chat'> 
+                                <div class='chat-text'> 
+                                    Selamat malam! ada yang bisa dibantu? 
+                                </div> 
                             </div> 
-                            <div class="chat-time">
-                                04:03 AM
+                            <div class='chat-time'> 
+                                {{currentBotTime}} 
+                            </div> 
+                        </div>
+                        {% for chat in arrayChatUser %}
+                            <div class="d-flex flex-row-reverse">
+                                <div class="user-chat">
+                                    <div class="chat-text">
+                                        {{chat[0]}}
+                                    </div>
+                                </div>
+                                <div class="chat-time">
+                                    {{chat[1]}}
+                                </div>
                             </div>
-                        </div>
-                        <div class="#">
-                            <input type="text" class="chat-input">
-                        </div>
+                        {% endfor %}
+                        <form action="/" method="POST" autocomplete="off">
+                            <input type="text" class="chat-input" name="user-chat">
+                        </form>
                     </div>
                 </div>
             </div>
