@@ -17,10 +17,10 @@ def boyer_moore_string_matching(sentence, matcher):
             if (sentence[matcher_idx+sentence_idx] != matcher[matcher_idx]):
                 # If current character in sentence is within bad_match_table we use that value to calculate shifting
                 if (sentence[matcher_idx+sentence_idx] in bad_match_table):
-                    sentence_idx += bad_match_table[sentence[matcher_idx+sentence_idx]] + matcher_idx - len(matcher) + 1
+                    sentence_idx += max(1, bad_match_table[sentence[matcher_idx+sentence_idx]] + matcher_idx - len(matcher) + 1)
                 # if current character in sentence not in bad_match_table, simply use matcher_idx to shift
                 else :
-                    sentence_idx += matcher_idx + 1
+                    sentence_idx += max(1, matcher_idx + 1)
                 break
             # If sentence match the matcher, decrement matcher_idx to check remaining character
             matcher_idx -= 1
@@ -29,12 +29,12 @@ def boyer_moore_string_matching(sentence, matcher):
             return True
     return False
 
-print(boyer_moore_string_matching("ZZZZZOLOLOLOLZZZZZZZZZZZZZLOLOLOL", "LOLOLOL"))
+# print(boyer_moore_string_matching("KuissssssPraktPraktikum", "Kuis"))
                                 #       LOLOLOL
 
 
-# For debugging:
-# def boyer_moore_string_matching(sentence, matcher):
+# # For debugging:
+# def boyer_moore_string_matching_debug(sentence, matcher):
 #     # Construction bad match table
 #     bad_match_table = {}
 #     for i in range(len(matcher)):
@@ -42,6 +42,7 @@ print(boyer_moore_string_matching("ZZZZZOLOLOLOLZZZZZZZZZZZZZLOLOLOL", "LOLOLOL"
 #         bad_match_table[matcher[i]] = shift
 #     print(bad_match_table)
 #     sentence_idx = 0
+#     z = 0
 #     while(sentence_idx <= len(sentence) - len(matcher)):
 #         matcher_idx = len(matcher) - 1
 #         while(matcher_idx >= 0):
@@ -49,7 +50,7 @@ print(boyer_moore_string_matching("ZZZZZOLOLOLOLZZZZZZZZZZZZZLOLOLOL", "LOLOLOL"
 #             if (sentence[matcher_idx+sentence_idx] != matcher[matcher_idx]):
 #                 if (sentence[matcher_idx+sentence_idx] in bad_match_table):
 #                     print("found")
-#                     sentence_idx += bad_match_table[sentence[matcher_idx+sentence_idx]] + matcher_idx - len(matcher) + 1
+#                     sentence_idx += max(1, bad_match_table[sentence[matcher_idx+sentence_idx]] + matcher_idx - len(matcher) + 1)
 #                 else :
 #                     print("not found")
 #                     sentence_idx += max(1, matcher_idx + 1)
@@ -59,6 +60,11 @@ print(boyer_moore_string_matching("ZZZZZOLOLOLOLZZZZZZZZZZZZZLOLOLOL", "LOLOLOL"
 #             print("sentence_idx is " + str(sentence_idx))
 #         if (matcher_idx == -1) :
 #             return True
+#         z += 1
+#         if (z == 10) : break
 #     return False
+
+# print(boyer_moore_string_matching_debug("KuissssssPraktPraktikum", "Tubes"))
+#                                     #    Tubes
 
 
