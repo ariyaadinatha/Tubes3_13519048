@@ -5,12 +5,12 @@ import datetime
 
 
 def getListOfKataPenting():
-    return ["kuis", "ujian", "tucil", "tubes", "praktikum"]
+    return ["Kuis", "Ujian", "Tucil", "Tubes", "Praktikum"]
 
 
 def getFlag():
     # TODO : Lengkapin Flag
-    return ["help", "assistant", "diundur", "selesai", "deadline"]
+    return ["help", "assistant", "diundur", "selesai", "deadline", "apa"]
 
 
 def GetInputDate(inputTask):
@@ -39,26 +39,24 @@ def DateConverter(inputListDate):
         return datetime.datetime(int(inputListDate[2]), intMonth, int(inputListDate[0])).strftime("%d/%m/%Y")
     except:
         pass
-    i = 1
+    i = 0
     while i < (len(ListOfMonths)):
 
         if inputListDate[1].lower() == ListOfMonths[i]:
             break
         i += 1
-    if i == 13:
+    if i == 12:
         raise Exception("Invalid Month Input!")
-    return datetime.datetime(int(inputListDate[2]), i, int(inputListDate[0])).strftime("%d/%m/%Y")
+    return datetime.datetime(int(inputListDate[2]), i+1, int(inputListDate[0])).strftime("%d/%m/%Y")
 
 
 def GetInputKodeKuliah(inputTask):
-    task = ""
     task = re.search(
-        "([a-zA-Z][a-zA-Z]\d{4})(.(\w*))*(?=\s(\d{1,2}).(\d{1,2}).(\d{4})|\s(\d{1,2}).(\w+).(\d{4}))", inputTask)
-
-    if task:
-        print("yo",task)
+        "([a-zA-Z][a-zA-Z]\d{4})", inputTask)
+    print(inputTask)
+    if task is None:
+        return ""
     else:
-        print(task)
         task = task.group().strip(" pada")
         inputKodeKuliah = re.search(
             "([a-zA-Z][a-zA-Z]\d{4})", task).group()
@@ -68,6 +66,8 @@ def GetInputKodeKuliah(inputTask):
 def GetInputDeskripsiTugas(inputTask):
     task = re.search(
         "([a-zA-Z][a-zA-Z]\d{4})(.(\w*))*(?=\s(\d{1,2}).(\d{1,2}).(\d{4})|\s(\d{1,2}).(\w+).(\d{4}))", inputTask)
+    if task is None:
+        return ""
     task = task.group().strip(" pada")
     inputDeskripsiTugas = re.search(
         "(?<=([a-zA-Z][a-zA-Z]\d{4}\s))(.(\w*))*", task).group()
@@ -95,11 +95,11 @@ def query(database, queries, idx):
     for query in queries:
         for data in database:
             if data[idx] == query:
-                result += [data]
+                result.append(data)
     return result
 
 
-def task_viewer(sentence):
+def task_viewer(sentence, indeks):
     database = fileIO.loadTask()
 
     kata_penting = getListOfKataPenting()
@@ -107,13 +107,18 @@ def task_viewer(sentence):
     for kata in kata_penting:
         if (boyer_moore.boyer_moore_string_matching(sentence, kata)):
             match += [kata]
+
+    print(database)
     print("match: " + str(match))
     db = []
+
+    for i in range(len(database)):
+        database[i].append(i+1)
 
     for data in database:
         if (not data[4]):
             db += [data]
-
+    print(db)
     # Dari regex
     list_of_date = GetInputDate(sentence)
     list_of_date = [DateConverter(inputDate) for inputDate in list_of_date]
@@ -125,7 +130,50 @@ def task_viewer(sentence):
     result = []
     today = datetime.date.today()
     # Cari deadline yang < dari date
-    if (len(list_of_date) == 1):
+    if (len(list_of_date) == 0):
+        date = datetime.date.today()
+        special_time = ["besok", "lusa", "minggu depan",
+                        "bulan depan", "tahun depan", "hari ini", "minggu ini", "bulan ini", "tahun ini"]
+        special_time_value = ["1 hari", "2 hari",
+                              "7 hari", "1 bulan", "1 tahun", "1 hari", "7 hari", "1 bulan", "1 tahun"]
+
+        for i in range(len(special_time)):
+            sentence = sentence.replace(special_time[i], special_time_value[i])
+        time_unit = ["hari", "minggu", "bulan", "tahun"]
+        idIDX = re.findall("(?<=\s)(\d+)(?=\s)", sentence)
+        time_unit_found = []
+        for unit in time_unit:
+            if (boyer_moore.boyer_moore_string_matching(sentence, unit)):
+                time_unit_found.append(unit)
+
+        if (idIDX == []):
+            result = db
+        elif (len(time_unit_found) > 1):
+            return ["Error"]
+        elif (len(time_unit_found) == 1) and len(idIDX) == 1:
+            if (time_unit_found[0] == "hari"):
+                date += datetime.timedelta(days=int(idIDX[0]))
+            elif (time_unit_found[0] == "minggu"):
+                date += datetime.timedelta(days=(int(idIDX[0])*7))
+            elif (time_unit_found[0] == "bulan"):
+                date += datetime.timedelta(days=(int(idIDX[0])*30))
+            elif (time_unit_found[0] == "tahun"):
+                date += datetime.timedelta(days=(int(idIDX[0])*365))
+
+            for each in db:
+                temp = each[0].split("/")
+                deadline = datetime.date(
+                    int(temp[2]), int(temp[1]), int(temp[0]))
+                print("date: " + str(date))
+                print("each: " + str(each))
+                if (deadline >= today) and (date >= deadline):
+                    result += [each]
+
+            print("RESULT: " + str(result))
+        else:
+            return ["Error"]
+
+    elif (len(list_of_date) == 1):
         print("Masuk")
         for each in db:
             date = list_of_date[0].split('/')
@@ -134,9 +182,9 @@ def task_viewer(sentence):
                 int(date[2]), int(date[1]), int(date[0]))
             deadline = datetime.date(
                 int(temp[2]), int(temp[1]), int(temp[0]))
-            if (deadline >= today) and (date <= deadline):
+            if (deadline >= today) and (date >= deadline):
                 result += [each]
-        print("back")
+        print("back  " + str(result))
 
     # Cari deadline yang diantara 2 date itu
     elif (len(list_of_date) == 2):
@@ -147,10 +195,13 @@ def task_viewer(sentence):
             temp = each[0].split("/")
             deadline = datetime.date(
                 int(temp[2]), int(temp[1]), int(temp[0]))
-            deadline = datetime.date(
-                int(temp[2]), int(temp[1]), int(temp[0]))
 
-            if (deadline >= min(date1, date2)) and (max(date1, date2) <= deadline):
+            date1 = datetime.date(
+                int(date1[2]), int(date1[1]), int(date1[0]))
+            date2 = datetime.date(
+                int(date2[2]), int(date2[1]), int(date2[0]))
+
+            if (deadline >= min(date1, date2)) and (max(date1, date2) >= deadline):
                 result += [each]
         print("Keluar2")
 
@@ -159,34 +210,45 @@ def task_viewer(sentence):
         print("Error")
         return []
 
-    final =[]
+    final = []
     code = []
     try:
         code.append(GetInputKodeKuliah(sentence))
     except:
         pass
 
-    if (code == []):
+    print("Code: " + str(code))
+    print("result: " + str(result))
+
+    if (code == [''] or code == []):
+        print("Masuk111")
         final = result
     else:
-        
-    # 1 is the index of codes in database
-    result = query(db, code, 1)
+        print("Masuk333")
+        final = query(result, code, 1)
 
-    # Jika match tidak ada, return semua
-    tugas_in_match = [match[i] for i in range(
-        len(match)) if match[i] in ["Tubes", "Tucil"]]
-    if (tugas_in_match == []):
-        return query(result, ["Tubes", "Tucil"], 2)
+    print("Final: " + str(final))
+    if (indeks == 1):
+        return query(final, ["Tubes", "Tucil"], 2)
+    # tugas_in_match = [match[i] for i in range(
+    #     len(match)) if match[i] in ["Tubes", "Tucil"]]
+    # if (tugas_in_match == []):
+    #     print("finals: " + str(final))
     else:
-        return query(result, tugas_in_match, 2)
+        if (match == []):
+            print("finals2: " + str(final))
+            return final
+        elif (len(match) == 1):
+            return query(final, match, 2)
+        else:
+            return ["Error"]
 
 
 def HandleInput(inputTask):
     # Init local storage
     ListOfTask = []
     # Load File
-    inputTask = inputTask.lower()
+
     try:
         ListOfTask = fileIO.loadTask()
     except Exception:
@@ -194,7 +256,7 @@ def HandleInput(inputTask):
 
     flagFound = ""
     for flag in getFlag():
-        if boyer_moore.boyer_moore_string_matching(inputTask, flag):
+        if boyer_moore.boyer_moore_string_matching(inputTask.lower(), flag):
             flagFound = (flag)
             break
     if len(flagFound) == 0:
@@ -223,7 +285,7 @@ def HandleInput(inputTask):
                     ListOfTask[-1][1])+" - "+str(ListOfTask[-1][2]) + " - "+str(ListOfTask[-1][3])+"\n"
                 return output
             else:
-                return "Invalid Input1"
+                return "Invalid Input! No Argument Detected"
     elif("help" in flag) or ("assistant" in flag):
         return """
             [Fitur]
@@ -243,9 +305,40 @@ def HandleInput(inputTask):
 
         """
     elif ("deadline" in flag):
-        task_viewer("")
+        result = task_viewer(inputTask, 1)
+        if (result == []):
+            return "Tidak ada"
+        elif (result == ["Error"]):
+            return "Error"
+        else:
+            output = "[Daftar Deadline]\n"
+            idx = 1
+            for each in result:
+                output += str(idx) + ". (ID: " + str(each[5]) + ") " + each[0] + \
+                    " - " + each[1] + " - " + each[2] + " - " + each[3] + "\n"
+            return output
+
+    elif ("ada" in flag):
+        result = task_viewer(inputTask, 2)
+        if (result == []):
+            return "Tidak ada"
+        elif (result == ["Error"]):
+            return "Error"
+        else:
+            output = "[Daftar Deadline]\n"
+            idx = 1
+            for each in result:
+                output += str(idx) + ". (ID: " + str(each[5]) + ") " + each[0] + \
+                    " - " + each[1] + " - " + each[2] + " - " + each[3] + "\n"
+            return output
+
     elif ("diundur" in flag):
-        idIDX = re.findall("(?<=\s)(\d+)(?=\s)", inputTask)
+        idIDXList = re.findall("(\w+)\s(\d+)", inputTask)
+        print(idIDXList)
+        idIDX = [id for id in idIDXList if "task" in id[0].lower()]
+        print(idIDX)
+        idIDX = [id[1] for id in idIDX]
+        print(idIDX)
         tgl_diundur = DateConverter(GetInputDate(inputTask)[0])
         found = False
         for i in range(len(ListOfTask)):
@@ -257,11 +350,14 @@ def HandleInput(inputTask):
         fileIO.saveTask(ListOfTask)
         return "Task Berhasil Di Update"
     elif ("selesai" in flag):
-        idIDX = re.findall("(?<=\s)(\d+)(?=\s)", inputTask)
+        idIDXList = re.findall("(\w+)\s(\d+)", inputTask)
+        print(idIDXList)
+        idIDX = [id for id in idIDXList if "task" in id]
+        print(idIDX)
         found = False
         for i in range(len(ListOfTask)):
             if str(i+1) in (idIDX):
-                ListOfTask[i][0] = True
+                ListOfTask[i][4] = True
                 found = True
         if(not found):
             return "ID Task tidak ditemui"
@@ -273,9 +369,9 @@ def HandleInput(inputTask):
 
 
 if __name__ == "__main__":
-    #print(task_viewer("Apa aja deadline sampai 28-04-2021"))
-    #print(HandleInput(" Deadline task 3 diundur menjadi 01/01/2021"))
-    print(HandleInput("yo"))
+    print(task_viewer("Apa aja Praktikum hari ini", 2))
+    # print(HandleInput(" Deadline task 1 dan TASK 3 diundur menjadi 28 april 2021 "))
+    # print(HandleInput("deadline tugas 5 sudah selesai"))
     # print(HandleInput("Tubes IF2211 String Matching pada 14-02-2021"))
 
     # for j in range(len(ListOfTask)):
