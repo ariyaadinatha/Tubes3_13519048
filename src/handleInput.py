@@ -24,14 +24,14 @@ def GetInputDate(inputTask):
             if len(data) != 0:
                 filteredData.append(data)
         filteredDate.append(filteredData)
-    print(filteredDate)
+    # print(filteredDate)
     return (filteredDate)
 
 
 def DateConverter(inputListDate):
     ListOfMonths = ["januari", "februari", "maret", "april", "mei", "juni",
-                    "juli", "agu2stus", "september", "oktober", "november", "desember"]
-    print(inputListDate)
+                    "juli", "agustus", "september", "oktober", "november", "desember"]
+    # print(inputListDate)
     try:
 
         intMonth = int(inputListDate[1])
@@ -47,7 +47,7 @@ def DateConverter(inputListDate):
         i += 1
     if i == 13:
         raise Exception("Invalid Month Input!")
-    return datetime.datetime(inputListDate[2], i, inputListDate[0]).strftime("%d/%m/%Y")
+    return datetime.datetime(int(inputListDate[2]), i, int(inputListDate[0])).strftime("%d/%m/%Y")
 
 
 def GetInputKodeKuliah(inputTask):
@@ -110,10 +110,10 @@ def HandleInput(inputTask):
         else:
 
             if inputDate and inputKodeKuliah and inputKategoriTugas and inputDeskripsiTugas:
-                print("Befero Append")
+                # print("Befero Append")
                 ListOfTask.append([DateConverter(
                     inputDate[0]), inputKodeKuliah, inputKategoriTugas, inputDeskripsiTugas, False])
-                print("after Append")
+                # print("after Append")
                 fileIO.saveTask(ListOfTask)
 
                 output = "[TASK BERHASIL DICATAT]\n"
@@ -122,14 +122,33 @@ def HandleInput(inputTask):
                 return output
             else:
                 return "Invalid Input1"
-
+    elif("help" in flag) or ("assistant" in flag):
+        return """ 
+            [Fitur]
+            1. Menambahkan task baru
+            2. Melihat daftar task
+            3. Melihat deadline dari suatu task
+            4. Memperbaharui task
+            5. Menandai suatu task sudah selesai
+            6. Menampilkan opsi help
+            
+            [Daftar kata penting]
+            1. Kuis
+            2. Ujian
+            3. Tucil
+            4. Tubes
+            5. Praktikum
+        
+        """
+    elif ("deadline" in flag):
+        
     ListOfTask.append([])
-    print(ListOfTask)
+    # print(ListOfTask)
 
 
 if __name__ == "__main__":
 
-    print(HandleInput("Tubes IF2211 String Matching pada 14-02-2021"))
+    # print(HandleInput("Tubes IF2211 String Matching pada 14-02-2021"))
 
 # for j in range(len(ListOfTask)):
 #                         output+=str(j+1)+" "+ListOfTask[j][0]+" - "+ListOfTask[j][1]+" - "+ListOfTask[j][2]+" - "+ListOfTask[j][3]+"\n"

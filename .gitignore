@@ -1,5 +1,6 @@
 /env
 src/pycache
+/.venv
 *.pyc
 .vscode/settings.json
 .vscode/settings.json

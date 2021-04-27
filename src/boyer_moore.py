@@ -1,5 +1,3 @@
-kata_penting = ["Kuis", "Ujian", "Tucil", "Tubes", "Praktikum"]
-
 def boyer_moore_string_matching(sentence, matcher):
     # Constructing bad match table
     bad_match_table = {}
