@@ -1,77 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>depressedBot</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/bootstrap.min.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/main.css') }}"
+    />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <div class="chat-container">
-            <div class="row">
-                <div class="col-12">
-                    <div class="chat-header d-inline-flex">
-                        <img src="{{ url_for('static', filename='img/botprofile.jpg') }}" class="profile-image">
-                        <h3 class="bot-name"> Chat bot </h3>
-                    </div>
-                    <div class="chat-container" id="chat-container">
-                        <div class='d-flex flex-row'> 
-                            <div class='bot-chat'> 
-                                <div class='chat-text'> 
-                                    Selamat malam! ada yang bisa dibantu? 
-                                </div> 
-                            </div> 
-                            <div class='chat-time'> 
-                                13:00
-                            </div> 
-                        </div>
-                        
-                        
-                        
-                    </div>
-                    <input type="text" class="chat-input" name="user-chat" id="chat-input">
-                </div>
+      <div class="chat-container">
+        <div class="row">
+          <div class="col-12">
+            <div class="chat-header d-inline-flex">
+              <img
+                src="{{ url_for('static', filename='img/botprofile.jpg') }}"
+                class="profile-image"
+              />
+              <h3 class="bot-name">Chat bot</h3>
             </div>
+            <div class="chat-container" id="chat-container">
+              <div class="d-flex flex-row">
+                <div class="bot-chat">
+                  <div class="chat-text">
+                    Selamat malam! ada yang bisa dibantu?
+                  </div>
+                </div>
+                <div class="chat-time">13:00</div>
+              </div>
+            </div>
+            <input
+              type="text"
+              class="chat-input"
+              name="user-chat"
+              id="chat-input"
+            />
+          </div>
         </div>
+      </div>
     </div>
 
     <!-- Bootstrap -->
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
     <script>
-        function getBotChat() {
-            // Mengambil value dari input chat
-            var textInput = $("#chat-input").val();
-            // Template HTML untuk chat user
-            var chatHtml = '<div class="d-flex flex-row-reverse"> <div class="user-chat"> <div class="chat-text">' + textInput + '</div> </div> <div class="chat-time"> </div> </div>';
-            // Mengosongkan input chat
-            $("#chat-input").val("");
-            // Menambahkan chat user ke dalam HTML
-            $("#chat-container").append(chatHtml);
-            document
-                    .getElementById("chat-input")
-                    .scrollIntoView({block:"start", behavior:"smooth"});
-            $.get("/bot", {"user-chat": textInput}).done(function(data) {
-                // Template HTML untuk chat bot
-                var botChatHtml = "<div class='d-flex flex-row'> <div class='bot-chat'> <div class='chat-text'>" + data + "</div> </div> <div class='chat-time'> 13:00 </div> </div>";
-                // Menambahkan chat bot ke dalam HTML
-                $("#chat-container").append(botChatHtml);
-                document
-                        .getElementById("chat-input")
-                        .scrollIntoView({block: "start", behavior: "smooth"});
-            });
+      function getBotChat() {
+        // Mengambil value dari input chat
+
+        var textInput = $("#chat-input").val();
+        // Template HTML untuk chat user
+        var chatHtml =
+          '<div class="d-flex flex-row-reverse"> <div class="user-chat"> <div class="chat-text">' +
+          textInput +
+          '</div> </div> <div class="chat-time"> </div> </div>';
+        // Mengosongkan input chat
+        $("#chat-input").val("");
+        // Menambahkan chat user ke dalam HTML
+        $("#chat-container").append(chatHtml);
+        document
+          .getElementById("chat-input")
+          .scrollIntoView({ block: "start", behavior: "smooth" });
+        $.get("/bot", { "user-chat": textInput }).done(function (data) {
+          // Template HTML untuk chat bot
+          var botChatHtml =
+            "<div class='d-flex flex-row'> <div class='bot-chat'> <div class='chat-text'>" +
+            data +
+            "</div> </div> <div class='chat-time'> 13:00 </div> </div>";
+          // Menambahkan chat bot ke dalam HTML
+          $("#chat-container").append(botChatHtml);
+          document
+            .getElementById("chat-input")
+            .scrollIntoView({ block: "start", behavior: "smooth" });
+        });
+      }
+      // Jika enter, maka jalankan fungsi getBotChat()
+      $("#chat-input").keypress(function (e) {
+        if (e.which == 13) {
+          getBotChat();
         }
-        // Jika enter, maka jalankan fungsi getBotChat()
-        $("#chat-input").keypress(function(e) {
-            if (e.which == 13) {
-                getBotChat();
-            }
-        })
-
+      });
     </script>
-</body>
+  </body>
 </html>
-
