@@ -24,7 +24,7 @@ body {
   .user-chat {
     @extend .chat-container;
     background-color: theme(hexa);
-    text-align: right;
+    text-align: left;
   }
 
   .chat-text {

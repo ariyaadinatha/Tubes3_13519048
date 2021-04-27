@@ -18,7 +18,7 @@
                         <img src="{{ url_for('static', filename='img/botprofile.jpg') }}" class="profile-image">
                         <h3 class="bot-name"> Chat bot </h3>
                     </div>
-                    <div class="chat-container">
+                    <div class="chat-container" id="chat-container">
                         <div class='d-flex flex-row'> 
                             <div class='bot-chat'> 
                                 <div class='chat-text'> 
@@ -26,25 +26,14 @@
                                 </div> 
                             </div> 
                             <div class='chat-time'> 
-                                {{currentBotTime}} 
+                                13:00
                             </div> 
                         </div>
-                        {% for chat in arrayChatUser %}
-                            <div class="d-flex flex-row-reverse">
-                                <div class="user-chat">
-                                    <div class="chat-text">
-                                        {{chat[0]}}
-                                    </div>
-                                </div>
-                                <div class="chat-time">
-                                    {{chat[1]}}
-                                </div>
-                            </div>
-                        {% endfor %}
-                        <form action="/" method="POST" autocomplete="off">
-                            <input type="text" class="chat-input" name="user-chat">
-                        </form>
+                        
+                        
+                        
                     </div>
+                    <input type="text" class="chat-input" name="user-chat" id="chat-input">
                 </div>
             </div>
         </div>
@@ -52,6 +41,37 @@
 
     <!-- Bootstrap -->
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script>
+        function getBotChat() {
+            // Mengambil value dari input chat
+            var textInput = $("#chat-input").val();
+            // Template HTML untuk chat user
+            var chatHtml = '<div class="d-flex flex-row-reverse"> <div class="user-chat"> <div class="chat-text">' + textInput + '</div> </div> <div class="chat-time"> </div> </div>';
+            // Mengosongkan input chat
+            $("#chat-input").val("");
+            // Menambahkan chat user ke dalam HTML
+            $("#chat-container").append(chatHtml);
+            document
+                    .getElementById("chat-input")
+                    .scrollIntoView({block:"start", behavior:"smooth"});
+            $.get("/bot", {"user-chat": textInput}).done(function(data) {
+                // Template HTML untuk chat bot
+                var botChatHtml = "<div class='d-flex flex-row'> <div class='bot-chat'> <div class='chat-text'>" + data + "</div> </div> <div class='chat-time'> 13:00 </div> </div>";
+                // Menambahkan chat bot ke dalam HTML
+                $("#chat-container").append(botChatHtml);
+                document
+                        .getElementById("chat-input")
+                        .scrollIntoView({block: "start", behavior: "smooth"});
+            });
+        }
+        // Jika enter, maka jalankan fungsi getBotChat()
+        $("#chat-input").keypress(function(e) {
+            if (e.which == 13) {
+                getBotChat();
+            }
+        })
+
+    </script>
 </body>
 </html>
 
