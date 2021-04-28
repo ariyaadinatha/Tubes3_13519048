@@ -16,7 +16,12 @@ Adapun Fitur-Fitur yang disediakan oleh aplikasi adalah sebagai berikut :
 ----------------------
 - Clone github https://github.com/ariyaadinatha/Tubes3_13519048.git
 - Masuk ke folder hasil clone
-- Untuk pengguna Windows 
+- Buat virtual environment
+- Aktifkan virtual environment
+- Install Requirement dengan pip install
+- Masuk ke dalam folder src
+- Jalankan program app.py pada terminal dengan python
+
 
 ### **Requirement**
 ----------------------

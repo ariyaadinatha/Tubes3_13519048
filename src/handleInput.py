@@ -9,7 +9,7 @@ def getListOfKataPenting():
 
 
 def getFlag():
-    return ["help", "assistant", "diundur", "selesai", "kapan", "deadline", "tugas", "apa saja", "apa aja"]
+    return ["help", "assistant", "undur","maju","ubah", "selesai", "kapan", "deadline", "tugas", "apa saja", "apa aja"]
 
 
 def GetInputDate(inputTask):
@@ -23,7 +23,7 @@ def GetInputDate(inputTask):
             if len(data) != 0:
                 filteredData.append(data)
         filteredDate.append(filteredData)
-
+    print(filteredDate)
     return (filteredDate)
 
 
@@ -363,7 +363,7 @@ def HandleInput(inputTask):
                     idx+=1
                 return output
 
-    elif ("diundur" in flag):
+    elif ("undur" in flag) or ("maju" in flag)or ("ubah" in flag):
         idIDXList = re.findall("(\w+)\s(\d+)", inputTask)
         idIDX = [id for id in idIDXList if "task" in id[0].lower()]
         idIDX = [id[1] for id in idIDX]
