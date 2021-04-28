@@ -77,6 +77,7 @@
           document
             .getElementById("chat-input")
             .scrollIntoView({ block: "start", behavior: "smooth" });
+        $('#chat-container').scrollTop($('#chat-container')[0].scrollHeight);
       }
 
       function userChat(textInput) {
@@ -91,6 +92,7 @@
         document
           .getElementById("chat-input")
           .scrollIntoView({ block: "start", behavior: "smooth" });
+        $('#chat-container').scrollTop($('#chat-container')[0].scrollHeight);
       }
 
       function getTime() {

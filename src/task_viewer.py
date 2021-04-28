@@ -89,5 +89,3 @@ def task_viewer(sentence):
         else:
             return query(result, match, 2)
 
-
-print(task_viewer(""))
