@@ -24,18 +24,12 @@
               <img
                 src="{{ url_for('static', filename='img/botprofile.jpg') }}"
                 class="profile-image"
+                id="bot-image"
               />
               <h3 class="bot-name">Chat bot</h3>
             </div>
             <div class="chat-container" id="chat-container">
-              <div class="d-flex flex-row">
-                <div class="bot-chat">
-                  <div class="chat-text">
-                    Selamat malam! ada yang bisa dibantu?
-                  </div>
-                </div>
-                <div class="chat-time">13:00</div>
-              </div>
+              <!-- Chat bot -->
             </div>
             <input
               type="text"
@@ -47,19 +41,35 @@
         </div>
       </div>
     </div>
-
+ <!--src=""-->
     <!-- Bootstrap -->
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-    <script>
-      function getBotChat() {
-        // Mengambil value dari input chat
+    <script>  
+      $(document).ready(function() {
+        var data = "Halo, ada yang bisa dibantu?";
+        var botChatHtml =
+            "<div class='d-flex flex-row'> <div class='bot-chat'> <div class='chat-text'>" +
+            data +
+            "</div> </div> <div class='chat-time'>"+ getTime() +"</div> </div>";
+        $("#chat-container").append(botChatHtml);
+          document
+            .getElementById("chat-input")
+            .scrollIntoView({ block: "start", behavior: "smooth" });
+      });
 
+      function getTime() {
+        return new Date().toLocaleTimeString([], { hour: '2-digit', minute: "2-digit" });
+      }
+
+      function getBotChat() {
+        $("#bot-image").attr("src","https://media1.giphy.com/media/OPMBFWxXQYMJq/giphy.gif");
+        // Mengambil value dari input chat
         var textInput = $("#chat-input").val();
         // Template HTML untuk chat user
         var chatHtml =
           '<div class="d-flex flex-row-reverse"> <div class="user-chat"> <div class="chat-text">' +
           textInput +
-          '</div> </div> <div class="chat-time"> </div> </div>';
+          '</div> </div> <div class="chat-time">'+ getTime() +'</div> </div>';
         // Mengosongkan input chat
         $("#chat-input").val("");
         // Menambahkan chat user ke dalam HTML
@@ -72,12 +82,13 @@
           var botChatHtml =
             "<div class='d-flex flex-row'> <div class='bot-chat'> <div class='chat-text'>" +
             data +
-            "</div> </div> <div class='chat-time'> 13:00 </div> </div>";
+            "</div> </div> <div class='chat-time'>"+ getTime() +"</div> </div>";
           // Menambahkan chat bot ke dalam HTML
           $("#chat-container").append(botChatHtml);
           document
             .getElementById("chat-input")
             .scrollIntoView({ block: "start", behavior: "smooth" });
+        $("#bot-image").attr("src","{{ url_for('static', filename='img/botprofile.jpg') }}");
         });
       }
       // Jika enter, maka jalankan fungsi getBotChat()
